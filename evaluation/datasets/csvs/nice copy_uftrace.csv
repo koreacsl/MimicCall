@@ -1,0 +1,17 @@
+파일명,시스템콜,해당함수
+nice_0_graph.txt,getpriority,_raw_read_lock
+nice_0_graph.txt,newfstat,vfs_statx_fd
+nice_0_graph.txt,newfstat,__fdget_raw
+nice_0_graph.txt,newfstat,__fget_light
+nice_0_graph.txt,newfstat,vfs_getattr
+nice_0_graph.txt,newfstat,security_inode_getattr
+nice_0_graph.txt,newfstat,apparmor_inode_getattr
+nice_0_graph.txt,newfstat,common_perm_cond
+nice_0_graph.txt,newfstat,common_perm
+nice_0_graph.txt,newfstat,vfs_getattr_nosec
+nice_0_graph.txt,newfstat,generic_fillattr
+nice_0_graph.txt,newfstat,cp_new_stat
+nice_0_graph.txt,newfstat,from_kuid_munged
+nice_0_graph.txt,newfstat,map_id_up
+nice_0_graph.txt,newfstat,from_kgid_munged
+nice_0_graph.txt,newfstat,map_id_up

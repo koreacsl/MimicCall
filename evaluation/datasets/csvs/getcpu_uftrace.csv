@@ -1,0 +1,3 @@
+파일명,시스템콜,해당함수
+getcpu_nodep_cache_graph.txt,getcpu,fpregs_assert_state_consistent
+getcpu_cpup_nodep_cache_graph.txt,getcpu,fpregs_assert_state_consistent

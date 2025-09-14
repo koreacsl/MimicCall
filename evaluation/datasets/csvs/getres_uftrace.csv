@@ -1,0 +1,12 @@
+파일명,시스템콜,해당함수
+getsid_pid1234_graph.txt,getsid,find_task_by_vpid
+getsid_pid1234_graph.txt,getsid,security_task_getsid
+getsid_pid1234_graph.txt,getsid,pid_vnr
+getsid_pid1_graph.txt,getsid,find_task_by_vpid
+getsid_pid1_graph.txt,getsid,security_task_getsid
+getsid_pid1_graph.txt,getsid,pid_vnr
+getresuid_graph.txt,getresuid,from_kuid_munged
+getresuid_graph.txt,getresuid,map_id_up
+getsid_pid0_graph.txt,getsid,pid_vnr
+getresgid_graph.txt,getresgid,from_kgid_munged
+getresgid_graph.txt,getresgid,map_id_up

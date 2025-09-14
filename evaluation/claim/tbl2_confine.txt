@@ -1,0 +1,3 @@
+%s\n
+[+] Min vulnerable functions per filter: 83 (Binary: nats-streaming.seccomp)
+[+] Max vulnerable functions per filter: 120 (Binary: nuxeo.seccomp)

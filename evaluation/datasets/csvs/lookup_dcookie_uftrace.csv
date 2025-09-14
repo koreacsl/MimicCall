@@ -1,0 +1,11 @@
+파일명,시스템콜,해당함수
+test_lookup_dcookie_graph.txt,lookup_dcookie,do_lookup_dcookie
+test_lookup_dcookie_graph.txt,lookup_dcookie,capable
+test_lookup_dcookie_graph.txt,lookup_dcookie,ns_capable_common
+test_lookup_dcookie_graph.txt,lookup_dcookie,security_capable
+test_lookup_dcookie_graph.txt,lookup_dcookie,cap_capable
+test_lookup_dcookie_graph.txt,lookup_dcookie,apparmor_capable
+test_lookup_dcookie_graph.txt,lookup_dcookie,mutex_lock
+test_lookup_dcookie_graph.txt,lookup_dcookie,_cond_resched
+test_lookup_dcookie_graph.txt,lookup_dcookie,rcu_all_qs
+test_lookup_dcookie_graph.txt,lookup_dcookie,mutex_unlock

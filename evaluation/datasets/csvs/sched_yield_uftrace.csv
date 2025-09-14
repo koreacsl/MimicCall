@@ -1,0 +1,16 @@
+파일명,시스템콜,해당함수
+sched_yield_test_graph.txt,newfstat,vfs_statx_fd
+sched_yield_test_graph.txt,newfstat,__fdget_raw
+sched_yield_test_graph.txt,newfstat,__fget_light
+sched_yield_test_graph.txt,newfstat,vfs_getattr
+sched_yield_test_graph.txt,newfstat,security_inode_getattr
+sched_yield_test_graph.txt,newfstat,apparmor_inode_getattr
+sched_yield_test_graph.txt,newfstat,common_perm_cond
+sched_yield_test_graph.txt,newfstat,common_perm
+sched_yield_test_graph.txt,newfstat,vfs_getattr_nosec
+sched_yield_test_graph.txt,newfstat,generic_fillattr
+sched_yield_test_graph.txt,newfstat,cp_new_stat
+sched_yield_test_graph.txt,newfstat,from_kuid_munged
+sched_yield_test_graph.txt,newfstat,map_id_up
+sched_yield_test_graph.txt,newfstat,from_kgid_munged
+sched_yield_test_graph.txt,newfstat,map_id_up

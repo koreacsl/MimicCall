@@ -1,0 +1,3 @@
+%s\n
+[+] Min vulnerable functions per filter: 101 (Filter: smtpd/smtpd.syscall.out)
+[+] Max vulnerable functions per filter: 109 (Filter: curl/curl.syscall.out)

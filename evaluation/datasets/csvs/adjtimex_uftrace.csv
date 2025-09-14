@@ -1,0 +1,12 @@
+파일명,시스템콜,해당함수
+adjtimex_graph.txt,adjtimex,do_adjtimex
+adjtimex_graph.txt,adjtimex,add_device_randomness
+adjtimex_graph.txt,adjtimex,_raw_spin_lock_irqsave
+adjtimex_graph.txt,adjtimex,_raw_spin_unlock_irqrestore
+adjtimex_graph.txt,adjtimex,ktime_get_real_ts64
+adjtimex_graph.txt,adjtimex,_raw_spin_lock_irqsave
+adjtimex_graph.txt,adjtimex,__do_adjtimex
+adjtimex_graph.txt,adjtimex,ntp_get_next_leap
+adjtimex_graph.txt,adjtimex,_raw_spin_unlock_irqrestore
+adjtimex_graph.txt,adjtimex,ntp_notify_cmos_timer
+adjtimex_graph.txt,adjtimex,queue_delayed_work_on
