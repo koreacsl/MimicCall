@@ -1,3 +1,10 @@
 tool/cfiles
-tool/compile_1.py
-install_1.sh
+tool/exe
+tool/exe_root
+tool/csvs
+tool/trace
+tool/compile_error.log
+tool/long_run.log
+tool/trace_runtime_errors.log
+gmon.out
+uftrace
