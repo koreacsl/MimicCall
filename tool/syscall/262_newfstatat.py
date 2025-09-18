@@ -1,7 +1,7 @@
 import os
 
 def generate_newfstatat_tests():
-    output_dir = "./tool/cfiles/newfstatat"
+    output_dir = "./tool/cfiles/262_newfstatat"
     os.makedirs(output_dir, exist_ok=True)
 
     flags = [
@@ -51,7 +51,8 @@ int main() {{
         int fd = open("/dev/null", O_PATH | O_CLOEXEC);
         if (fd == -1) return 1;
         result = syscall(SYS_newfstatat, AT_FDCWD, "/dev/null", &statbuf, current_flags);
-
+    }}
+    
     if (result == -1) {{
         return 1;
     }}

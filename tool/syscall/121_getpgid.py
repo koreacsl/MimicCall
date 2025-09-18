@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_getpgid_tests():
@@ -13,7 +13,6 @@ def generate_getpgid_tests():
 #endif
 
 int main() {
-    // Get the PGID of the calling process (pid=0).
     syscall(SYS_getpgid, 0);
     return 0;
 }

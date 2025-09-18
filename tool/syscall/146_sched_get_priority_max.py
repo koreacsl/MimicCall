@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_sched_get_priority_max_tests():

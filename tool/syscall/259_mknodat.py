@@ -1,22 +1,14 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_mknodat_tests():
     output_dir = "./tool/cfiles/259_mknodat"
     os.makedirs(output_dir, exist_ok=True)
 
-    mknod_modes = [
-        "S_IFIFO",
-        "S_IFCHR",
-        "S_IFBLK",
-        "S_IFREG",
-        "S_IFSOCK"
-    ]
+    mknod_modes = ["S_IFIFO", "S_IFCHR", "S_IFBLK", "S_IFREG", "S_IFSOCK"]
 
     for mode_str in mknod_modes:
         dev_expression = "0"
-        # For character and block special files, a device number is required.
-        # We use makedev(1, 3), which corresponds to /dev/null.
         if mode_str in ["S_IFCHR", "S_IFBLK"]:
             dev_expression = "makedev(1, 3)"
 
@@ -39,8 +31,6 @@ int main() {{
         return 1;
     }}
 
-    // The call might fail for non-root users (e.g., for S_IFCHR/S_IFBLK),
-    // which is an expected and safe outcome.
     syscall(SYS_mknodat, dirfd, filename, {mode_str} | S_IRUSR | S_IWUSR, {dev_expression});
     
     close(dirfd);

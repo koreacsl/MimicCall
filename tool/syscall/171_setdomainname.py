@@ -31,10 +31,10 @@ int main() {
 }
 """
 
-directory = "./tool/cfiles/171_domainname"
+directory = "./tool/cfiles/171_setdomainname"
 os.makedirs(directory, exist_ok=True)
 
-filename = os.path.join(directory, f"domainname_0.c")
+filename = os.path.join(directory, f"setdomainname_0.c")
 
 with open(filename, "w") as f:
     f.write(template)

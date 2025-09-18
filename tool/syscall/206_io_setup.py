@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_io_setup_tests():
@@ -23,13 +23,12 @@ int main() {
         return 1;
     }
 
-    // Clean up immediately to leave the system unchanged.
     syscall(SYS_io_destroy, ctx);
 
     return 0;
 }
 """
-    filename = os.path.join(output_dir, "test_io_setup_0.c")
+    filename = os.path.join(output_dir, "io_setup_0.c")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(c_code)
 

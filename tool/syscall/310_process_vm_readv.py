@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_process_vm_readv_tests():

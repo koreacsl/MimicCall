@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_unlinkat_tests():
@@ -14,7 +14,7 @@ def generate_unlinkat_tests():
         if is_dir:
             setup_code = """
     const char* path = "/tmp/unlinkat_test_dir";
-    rmdir(path); // Clean up previous
+    rmdir(path);
     if (mkdir(path, 0755) == -1) {
         return 1;
     }
@@ -22,7 +22,7 @@ def generate_unlinkat_tests():
         else:
             setup_code = """
     const char* path = "/tmp/unlinkat_test_file";
-    unlink(path); // Clean up previous
+    unlink(path);
     int fd = open(path, O_CREAT | O_WRONLY, 0644);
     if (fd == -1) {
         return 1;

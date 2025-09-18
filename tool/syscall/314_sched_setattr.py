@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_sched_setattr_tests():
@@ -63,9 +63,7 @@ int main() {{
     new_attr.sched_policy = {policy_name};
     new_attr.sched_flags = {flag_value};
     
-    // This may fail for non-root users, which is a safe and valid outcome.
     if (syscall(SYS_sched_setattr, 0, &new_attr, 0) == 0) {{
-        // If setting succeeded, restore the original attributes to ensure no system impact.
         syscall(SYS_sched_setattr, 0, &original_attr, 0);
     }}
 

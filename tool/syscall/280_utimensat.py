@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_utimensat_tests():
@@ -39,8 +39,6 @@ int main() {{
         return 1;
     }}
 
-    // Using NULL for the timespec array sets access and modification
-    // times to the current time, which is the simplest way to test.
     if (syscall(SYS_utimensat, dirfd, filename, NULL, {flag_value}) == -1) {{
         close(dirfd);
         unlink(path);

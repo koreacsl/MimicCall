@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_swapon_tests():
@@ -7,15 +7,19 @@ def generate_swapon_tests():
 
     flags = {
         "none": "0",
-        "prefer": "0x8000", # SWAP_FLAG_PREFER
-        "discard": "0x10000" # SWAP_FLAG_DISCARD
+        "prefer": "0x8000",   # SWAP_FLAG_PREFER
+        "discard": "0x10000"  # SWAP_FLAG_DISCARD
     }
 
     for flag_name, flag_value in flags.items():
-        c_code = f"""#include <unistd.h>
+        c_code = f"""#define _GNU_SOURCE
+#include <unistd.h>
 #include <sys/syscall.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifndef SYS_swapon
 #define SYS_swapon 167
@@ -26,7 +30,7 @@ def generate_swapon_tests():
 
 #define SWAP_FILE_SIZE (1024 * 1024)
 
-int main() {{
+int main(void) {{
     const char *path = "/tmp/tmpswapfile_root_{flag_name}";
     int fd = -1;
     int swapon_result = -1;
@@ -34,31 +38,47 @@ int main() {{
 
     fd = open(path, O_CREAT | O_RDWR, 0600);
     if (fd == -1) {{
+        perror("open");
         return 1;
     }}
-    
-    if (ftruncate(fd, SWAP_FILE_SIZE) == -1) {{
+
+    int rc = posix_fallocate(fd, 0, SWAP_FILE_SIZE);
+    if (rc != 0) {{
+        errno = rc;
+        perror("posix_fallocate");
         close(fd);
         unlink(path);
         return 1;
     }}
     close(fd);
 
+    rc = system("/sbin/mkswap -f /tmp/tmpswapfile_root_{flag_name}");
+    if (rc != 0) {{
+        rc = system("mkswap -f /tmp/tmpswapfile_root_{flag_name}");
+        if (rc != 0) {{
+            fprintf(stderr, "mkswap failed (rc=%d)\\n", rc);
+            unlink(path);
+            return 1;
+        }}
+    }}
+
     swapon_result = syscall(SYS_swapon, path, {flag_value});
     if (swapon_result != 0) {{
+        perror("swapon");
         unlink(path);
         return 1;
     }}
 
     swapoff_result = syscall(SYS_swapoff, path);
+    if (swapoff_result != 0) {{
+        perror("swapoff");
+        unlink(path);
+        return 1;
+    }}
 
     unlink(path);
 
-    if (swapon_result == 0 && swapoff_result == 0) {{
-        return 0;
-    }}
-
-    return 1;
+    return 0;
 }}
 """
         filename = os.path.join(output_dir, f"swapon_{flag_name}.c")
@@ -67,4 +87,3 @@ int main() {{
 
 if __name__ == "__main__":
     generate_swapon_tests()
-

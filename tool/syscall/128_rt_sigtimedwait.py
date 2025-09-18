@@ -18,27 +18,34 @@ def generate_rt_sigtimedwait_tests():
 #define SYS_rt_sigtimedwait 128
 #endif
 
+#ifndef KERNEL_SIGSET_BYTES
+#define KERNEL_SIGSET_BYTES 8
+#endif
+
 int main() {
-    sigset_t mask;
-    struct timespec timeout;
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGUSR1);
 
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGUSR1);
-
-    if (syscall(SYS_rt_sigprocmask, SIG_BLOCK, &mask, NULL, sizeof(mask)) == -1) {
+    if (syscall(SYS_rt_sigprocmask, SIG_BLOCK, &set, NULL, KERNEL_SIGSET_BYTES) == -1) {
+        perror("rt_sigprocmask");
         return 1;
     }
 
-    timeout.tv_sec = 0;
-    timeout.tv_nsec = 1;
-
-    int result = syscall(SYS_rt_sigtimedwait, &mask, NULL, &timeout, sizeof(mask));
-
-    if (result == -1 && errno == EAGAIN) {
-        return 0;
+    if (kill(getpid(), SIGUSR1) == -1) {
+        perror("kill");
+        return 1;
     }
 
-    return 1;
+    struct timespec ts = { .tv_sec = 1, .tv_nsec = 0 };
+    siginfo_t si;
+    long r = syscall(SYS_rt_sigtimedwait, &set, &si, &ts, KERNEL_SIGSET_BYTES);
+    if (r == -1) {
+        perror("rt_sigtimedwait");
+        return 1;
+    }
+
+    return 0;
 }
 """
     filename = f"{output_dir}/rt_sigtimedwait_0.c"

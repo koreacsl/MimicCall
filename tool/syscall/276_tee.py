@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_tee_tests():
-    output_dir = "./tool/cfiles/tee"
+    output_dir = "./tool/cfiles/276_tee"
     os.makedirs(output_dir, exist_ok=True)
 
     splice_flags = {

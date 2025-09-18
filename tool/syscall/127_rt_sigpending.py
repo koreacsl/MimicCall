@@ -39,8 +39,6 @@ int main() {
         write(pipefd[1], "R", 1);
         close(pipefd[1]);
 
-        printf("Child process (PID: %d) waiting for SIGINT (it will be pending)...\\n", getpid());
-
         sleep(1);
 
         sigset_t pending_set;
@@ -49,13 +47,6 @@ int main() {
             return 1;
         }
 
-        if (sigismember(&pending_set, SIGINT)) {
-            printf("Child: SIGINT is pending.\\n");
-        } else {
-            printf("Child: SIGINT is NOT pending.\\n");
-        }
-
-        printf("Child process completed.\\n");
         return 0;
     } else {
         close(pipefd[1]);
@@ -64,7 +55,6 @@ int main() {
         read(pipefd[0], &buf, 1);
         close(pipefd[0]);
 
-        printf("Parent sending SIGINT to child (PID: %d)\\n", child_pid);
         if (kill(child_pid, SIGINT) == -1) {
             perror("kill failed");
             return 1;
@@ -72,7 +62,6 @@ int main() {
 
         kill(child_pid, SIGTERM);
         waitpid(child_pid, NULL, 0);
-        printf("Child process terminated.\\n");
     }
 
     return 0;

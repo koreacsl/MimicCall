@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import os
 
 def generate_clone3_tests():
     output_dir = "./tool/cfiles/435_clone3"
     os.makedirs(output_dir, exist_ok=True)
-    
+
     clone_flags = [
         "CLONE_VM", "CLONE_FS", "CLONE_FILES", "CLONE_SIGHAND", "CLONE_PTRACE",
         "CLONE_VFORK", "CLONE_PARENT", "CLONE_THREAD", "CLONE_NEWNS", "CLONE_SYSVSEM",
@@ -16,14 +15,16 @@ def generate_clone3_tests():
 
     for flag in clone_flags:
         flags_to_set = {flag}
-        if flag in ("CLONE_THREAD", "CLONE_SIGHAND", "CLONE_SETTLS", 
-                    "CLONE_PARENT_SETTID", "CLONE_CHILD_CLEARTID", 
+        if flag in ("CLONE_THREAD", "CLONE_SIGHAND", "CLONE_SETTLS",
+                    "CLONE_PARENT_SETTID", "CLONE_CHILD_CLEARTID",
                     "CLONE_CHILD_SETTID"):
             flags_to_set.add("CLONE_VM")
         if flag == "CLONE_THREAD":
             flags_to_set.add("CLONE_SIGHAND")
 
-        flag_str = " | ".join(flags_to_set)
+        flag_str = " | ".join(sorted(flags_to_set))
+
+        exit_sig = "0" if "CLONE_THREAD" in flags_to_set else "SIGCHLD"
 
         c_code = f"""#define _GNU_SOURCE
 #include <sched.h>
@@ -33,33 +34,40 @@ def generate_clone3_tests():
 #include <sys/wait.h>
 #include <sys/syscall.h>
 #include <signal.h>
+#include <stdint.h>
 
 #ifndef SYS_clone3
 #define SYS_clone3 435
 #endif
 
+#ifndef CLONE_CLEAR_SIGHAND
+#define CLONE_CLEAR_SIGHAND  (1ULL << 32)
+#endif
+#ifndef CLONE_INTO_CGROUP
+#define CLONE_INTO_CGROUP    (1ULL << 33)
+#endif
+#ifndef CLONE_PIDFD
+#define CLONE_PIDFD          0x00001000
+#endif
+
 #define STACK_SIZE (1024 * 1024)
 
 struct clone_args {{
-    __u64 flags;
-    __u64 pidfd;
-    __u64 child_tid;
-    __u64 parent_tid;
-    __u64 exit_signal;
-    __u64 stack;
-    __u64 stack_size;
-    __u64 tls;
-    __u64 set_tid;
-    __u64 set_tid_size;
-    __u64 cgroup;
+    uint64_t flags;
+    uint64_t pidfd;
+    uint64_t child_tid;
+    uint64_t parent_tid;
+    uint64_t exit_signal;
+    uint64_t stack;
+    uint64_t stack_size;
+    uint64_t tls;
+    uint64_t set_tid;
+    uint64_t set_tid_size;
+    uint64_t cgroup;
 }};
 
-static int child_func(void *arg) {{
-    return 0;
-}}
-
-int main() {{
-    char *stack = malloc(STACK_SIZE);
+int main(void) {{
+    void *stack = malloc(STACK_SIZE);
     if (!stack) {{
         return 1;
     }}
@@ -67,21 +75,20 @@ int main() {{
     struct clone_args cl_args;
     memset(&cl_args, 0, sizeof(cl_args));
     cl_args.flags = {flag_str};
-    cl_args.stack = (__u64)stack;
+    cl_args.stack = (uint64_t)stack;
     cl_args.stack_size = STACK_SIZE;
-    cl_args.exit_signal = SIGCHLD;
+    cl_args.exit_signal = {exit_sig};
 
     pid_t child_pid = syscall(SYS_clone3, &cl_args, sizeof(cl_args));
-
     if (child_pid == -1) {{
         free(stack);
         return 1;
     }}
 
     if (child_pid > 0) {{
-        waitpid(child_pid, NULL, 0);
+        (void)waitpid(child_pid, NULL, 0);
     }}
-    
+
     free(stack);
     return 0;
 }}
@@ -92,4 +99,3 @@ int main() {{
 
 if __name__ == "__main__":
     generate_clone3_tests()
-

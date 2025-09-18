@@ -1,3 +1,4 @@
+
 import os
 import itertools
 import textwrap
@@ -12,36 +13,33 @@ FS_ACCESS_FLAGS = {
     "MAKE_SOCK": 1 << 9, "MAKE_FIFO": 1 << 10, "MAKE_BLOCK": 1 << 11,
     "MAKE_SYM": 1 << 12, "REFER": 1 << 13, "TRUNCATE": 1 << 14,
 }
-NET_ACCESS_FLAGS = { "BIND_TCP": 1 << 0, "CONNECT_TCP": 1 << 1 }
+NET_ACCESS_FLAGS = {"BIND_TCP": 1 << 0, "CONNECT_TCP": 1 << 1}
 
 ALL_FS_ACCESS_MASK = sum(FS_ACCESS_FLAGS.values())
 ALL_NET_ACCESS_MASK = sum(NET_ACCESS_FLAGS.values())
 
-C_TEMPLATE = textwrap.dedent("""\
-    // Test for: landlock_create_ruleset
-    // Test name: {test_name}
+C_TEMPLATE = textwrap.dedent(r"""\
     #define _GNU_SOURCE
     #include <stdio.h>
     #include <stdlib.h>
     #include <unistd.h>
     #include <errno.h>
     #include <sys/syscall.h>
+    #include <stdint.h>
 
     #ifndef __NR_landlock_create_ruleset
     #define __NR_landlock_create_ruleset 444
     #endif
 
     struct landlock_ruleset_attr {{
-        __u64 handled_access_fs;
-        __u64 handled_access_net;
+        uint64_t handled_access_fs;
+        uint64_t handled_access_net;
     }};
 
     int main(int argc, char const *argv[]) {{
-        printf("--- Running Test: {test_name} ---\\n");
-
         const struct landlock_ruleset_attr attr = {{
-            .handled_access_fs = {handled_fs_mask},
-            .handled_access_net = {handled_net_mask},
+            .handled_access_fs  = (uint64_t){handled_fs_mask},
+            .handled_access_net = (uint64_t){handled_net_mask},
         }};
 
         int ruleset_fd = syscall(__NR_landlock_create_ruleset, &attr, sizeof(attr), 0);
@@ -56,7 +54,6 @@ C_TEMPLATE = textwrap.dedent("""\
             if (errno == EINVAL) {{
                 return EXIT_SUCCESS;
             }}
-            perror("[ FAIL ] landlock_create_ruleset failed unexpectedly");
             return EXIT_FAILURE;
         }}
     }}
@@ -76,7 +73,7 @@ def generate_all():
             handled_net_mask=0
         )
         write_c_file(test_name, content)
-        
+
     for name, mask in NET_ACCESS_FLAGS.items():
         test_name = f"create_ruleset_net_{name.lower()}"
         content = C_TEMPLATE.format(
@@ -85,7 +82,7 @@ def generate_all():
             handled_net_mask=mask
         )
         write_c_file(test_name, content)
-        
+
     test_name_all_fs = "create_ruleset_fs_all"
     content_all_fs = C_TEMPLATE.format(
         test_name=test_name_all_fs,
@@ -101,7 +98,7 @@ def generate_all():
         handled_net_mask=ALL_NET_ACCESS_MASK
     )
     write_c_file(test_name_all_net, content_all_net)
-    
+
     test_name_all = "create_ruleset_all"
     content_all = C_TEMPLATE.format(
         test_name=test_name_all,
@@ -120,4 +117,3 @@ def generate_all():
 
 if __name__ == "__main__":
     generate_all()
-

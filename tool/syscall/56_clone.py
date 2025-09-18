@@ -63,7 +63,7 @@ int main() {{
     return 0;
 }}
 """
-        filename = f"{output_dir}clone_{filename_suffix}.c"
+        filename = f"{output_dir}/clone_{filename_suffix}.c"
         with open(filename, "w", encoding="utf-8") as f:
             f.write(c_code)
 

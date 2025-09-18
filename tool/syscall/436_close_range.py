@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_close_range_tests():
@@ -33,7 +33,6 @@ int main() {{
     int fd3 = open("/dev/null", O_RDONLY);
 
     if (fd1 == -1 || fd2 == -1 || fd3 == -1) {{
-        // Clean up any that might have opened.
         if (fd1 != -1) close(fd1);
         if (fd2 != -1) close(fd2);
         if (fd3 != -1) close(fd3);

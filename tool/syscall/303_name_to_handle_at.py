@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_name_to_handle_at_tests():
@@ -36,7 +36,6 @@ struct file_handle {{
 
 int main() {{
     const char *path = "/tmp/test_handle_file";
-    // Using a large buffer for the handle.
     char handle_buf[128];
     struct file_handle *fhp = (struct file_handle*)handle_buf;
     int mount_id;
@@ -53,7 +52,6 @@ int main() {{
 
     fhp->handle_bytes = sizeof(handle_buf) - sizeof(*fhp);
 
-    // This may fail without sufficient privileges, which is a safe outcome.
     syscall(SYS_name_to_handle_at, dirfd, "test_handle_file", fhp, &mount_id, {flag_value});
 
     close(dirfd);

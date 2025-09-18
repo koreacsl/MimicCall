@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_add_key_tests():
@@ -35,14 +35,10 @@ int main() {{
 
     key_id = syscall(SYS_add_key, key_type, description, payload, sizeof(payload), keyring_id);
     
-    // For many key types, failure (e.g., ENODEV) is expected on a standard system.
-    // The goal is to safely execute the syscall path.
     if (key_id != -1) {{
-        // If key was added, revoke it to clean up.
         syscall(SYS_keyctl, KEYCTL_REVOKE, key_id);
     }}
 
-    // Unlink and clean up the test keyring.
     syscall(SYS_keyctl, KEYCTL_UNLINK, keyring_id, KEY_SPEC_SESSION_KEYRING);
 
     return 0;

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_ioprio_get_tests():
@@ -24,7 +24,6 @@ def generate_ioprio_get_tests():
 #define IOPRIO_WHO_USER    3
 
 int main() {{
-    // ioprio_get is a read-only operation and is inherently safe.
     syscall(SYS_ioprio_get, {which_const}, {who_func});
 
     return 0;

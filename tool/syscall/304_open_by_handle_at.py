@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_open_by_handle_at_tests():
@@ -18,7 +18,7 @@ def generate_open_by_handle_at_tests():
         "o_nonblock": "O_NONBLOCK",
         "o_path": "O_PATH",
         "o_sync": "O_SYNC",
-        "o_trunc": "O_TRUNC" # This flag should be ignored by the syscall
+        "o_trunc": "O_TRUNC"
     }
 
     for flag_name, flag_value in open_flags.items():
@@ -34,7 +34,6 @@ def generate_open_by_handle_at_tests():
 #define SYS_open_by_handle_at 304
 #endif
 
-// Some flags might not be defined in older headers
 #ifndef O_PATH
 #define O_PATH 010000000
 #endif
@@ -65,7 +64,7 @@ int main() {{
     if (syscall(SYS_name_to_handle_at, mount_fd, "test_open_by_handle_file", fhp, &mount_id, 0) == -1) {{
         close(mount_fd);
         unlink(path);
-        return 1; // Can't test open_by_handle_at if we can't get a handle.
+        return 1;
     }}
 
     opened_fd = syscall(SYS_open_by_handle_at, mount_fd, fhp, {flag_value});

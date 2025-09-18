@@ -91,13 +91,8 @@ def compile_c_files():
         os.makedirs(out_dir, exist_ok=True)
 
         folder_name = os.path.basename(root)
-        use_lrt = folder_name in [
-            "clock_adjtime", "timer", 
-            "mq_attr", "mq_notify", "mq_timedsend_receive", "eventfd"
-        ]
-        use_lnuma = folder_name in [
-            "mbind", "mempolicy", "pages", "lnuma"
-        ]
+        use_lrt = folder_name in ["clock_adjtime", "timer", "mq_attr", "mq_notify", "mq_timedsend_receive", "eventfd"]
+        use_lnuma = folder_name in ["mbind", "mempolicy", "pages", "lnuma"]
 
         for file in files:
             if not file.endswith(".c"):

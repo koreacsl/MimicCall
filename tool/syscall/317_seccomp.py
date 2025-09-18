@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_seccomp_tests():
@@ -46,7 +46,6 @@ int main() {{
         return 1;
     }}
 
-    // This test is safe because the filter explicitly allows all syscalls.
     if (syscall(SYS_seccomp, SECCOMP_SET_MODE_FILTER, 0, &prog) == -1) {{
         return 1;
     }}
@@ -58,11 +57,9 @@ int main() {{
 
     c_code_info = f"""{common_headers}
 int main() {{
-    // Test GET_ACTION_AVAIL
     unsigned int action = SECCOMP_RET_LOG;
     syscall(SYS_seccomp, SECCOMP_GET_ACTION_AVAIL, 0, &action);
 
-    // Test GET_NOTIF_SIZES
     struct seccomp_notif_sizes sizes;
     syscall(SYS_seccomp, SECCOMP_GET_NOTIF_SIZES, 0, &sizes);
 
@@ -75,7 +72,6 @@ int main() {{
     c_code_listener = f"""{common_headers}
 int main() {{
     struct sock_filter filter[] = {{
-        // A simple filter that traps an unlikely syscall to create a listener.
         BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof(struct seccomp_data, nr))),
         BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, SYS_getpgid, 0, 1),
         BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_TRAP),
@@ -99,7 +95,7 @@ int main() {{
 
     struct seccomp_notif_resp resp;
     memset(&resp, 0, sizeof(resp));
-    resp.id = 0; // Dummy ID
+    resp.id = 0;
     ioctl(listener_fd, SECCOMP_IOCTL_NOTIF_SEND, &resp);
 
     unsigned long long dummy_id = 0;

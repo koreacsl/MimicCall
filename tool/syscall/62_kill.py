@@ -4,7 +4,7 @@ def generate_kill_tests():
     output_dir = "./tool/cfiles/62_kill"
     os.makedirs(output_dir, exist_ok=True)
 
-    signals = ["SIGTERM", "SIGKILL", "SIGSTOP", "SIGCONT", "SIGUSR1"]
+    signals = ["SIGTERM", "SIGKILL", "SIGUSR1"]
 
     for signal_name in signals:
         

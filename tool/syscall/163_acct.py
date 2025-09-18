@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_acct_tests():
@@ -13,18 +13,13 @@ def generate_acct_tests():
 #endif
 
 int main() {
-    // Calling acct(NULL) attempts to turn process accounting off.
-    // As a non-root user, this will fail with EPERM.
-    // This is the safest way to test the acct syscall without affecting the system.
-    // The test is considered successful if the syscall fails as expected.
     int result = syscall(SYS_acct, NULL);
 
-    // If result is -1, the syscall failed as expected for a non-root user.
     if (result == -1) {
-        return 0; // Test PASSED
+        return 0;
     }
 
-    return 1; // Test FAILED
+    return 1;
 }
 """
     filename = os.path.join(output_dir, "acct_safe.c")

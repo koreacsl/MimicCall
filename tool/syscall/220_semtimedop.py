@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 output_dir = "./tool/cfiles/220_semtimedop"

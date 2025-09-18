@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_perf_event_open_tests():
@@ -34,17 +34,12 @@ int main() {{
     attr.size = sizeof(struct perf_event_attr);
     attr.disabled = 1;
 
-    // This test creates a performance monitoring event file descriptor.
-    // It is safe as it only affects the current process and the fd is closed immediately.
-    // pid=0: current process, cpu=-1: any cpu, group_fd=-1: no group leader.
     int fd = syscall(SYS_perf_event_open, &attr, 0, -1, -1, {flag_value});
     
     if (fd != -1) {{
         close(fd);
     }}
 
-    // The goal is to safely execute the syscall path.
-    // Failure is an acceptable outcome (e.g., due to permissions or hardware support).
     return 0;
 }}
 """

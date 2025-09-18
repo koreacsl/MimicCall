@@ -1,7 +1,7 @@
 import os
 
 def generate_dup3_tests():
-    output_dir = "./tool/cfiles/dup3"
+    output_dir = "./tool/cfiles/292_dup3"
     os.makedirs(output_dir, exist_ok=True)
 
     dup3_flags = {

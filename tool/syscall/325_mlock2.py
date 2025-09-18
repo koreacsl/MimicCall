@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 def generate_mlock2_tests():
@@ -11,6 +10,10 @@ def generate_mlock2_tests():
 
 #ifndef SYS_mlock2
 #define SYS_mlock2 325
+#endif
+
+#ifndef MLOCK_ONFAULT
+#define MLOCK_ONFAULT 1
 #endif
 
 int main() {

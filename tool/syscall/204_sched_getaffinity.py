@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_sched_getaffinity_tests():
@@ -20,7 +20,6 @@ int main() {
 
     CPU_ZERO(&mask);
 
-    // sched_getaffinity is a read-only operation and is inherently safe.
     if (syscall(SYS_sched_getaffinity, pid, sizeof(mask), &mask) == -1) {
         return 1;
     }

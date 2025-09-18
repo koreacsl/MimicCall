@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_fsconfig_tests():
@@ -28,7 +28,6 @@ int main() {{
     int fd = syscall(SYS_fsopen, "tmpfs", 0);
     if (fd < 0) return 1;
 
-    // This may require root privileges. Failure is an acceptable outcome.
     {syscall_line}
 
     close(fd);

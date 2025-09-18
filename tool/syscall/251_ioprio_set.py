@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_ioprio_set_tests():
@@ -31,14 +31,9 @@ int main() {{
 
     old_ioprio = syscall(SYS_ioprio_get, {which_const}, {who_func});
     if (old_ioprio == -1) {{
-        // If we can't get the priority, we can't safely test set.
-        // This is a valid outcome for non-root users.
         return 0;
     }}
 
-    // To test safely, we set the priority to its current value.
-    // This is a no-op if run as root, and will fail safely with EPERM
-    // for non-root users.
     syscall(SYS_ioprio_set, {which_const}, {who_func}, old_ioprio);
 
     return 0;

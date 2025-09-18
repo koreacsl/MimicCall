@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_getresuid_tests():
-    output_dir = "./tool/cfiles/getresuid_0"
+    output_dir = "./tool/cfiles/118_getresuid"
     os.makedirs(output_dir, exist_ok=True)
 
     c_code = """#include <unistd.h>

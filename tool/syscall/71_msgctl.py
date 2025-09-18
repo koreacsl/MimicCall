@@ -32,6 +32,11 @@ def generate_msgctl_tests():
 #ifndef MSG_INFO
 #define MSG_INFO 12
 #endif
+
+#ifndef IPC_INFO
+#define IPC_INFO 3
+#endif
+
 #ifndef MSG_STAT
 #define MSG_STAT 11
 #endif
@@ -48,7 +53,6 @@ int main() {{
     if (strcmp("{cmd_value}", "IPC_STAT") == 0) {{
         result = syscall(SYS_msgctl, msqid, {cmd_value}, &ds_buf);
     }} else if (strcmp("{cmd_value}", "IPC_SET") == 0) {{
-        // First, get current stats to modify them
         if (syscall(SYS_msgctl, msqid, IPC_STAT, &ds_buf) == -1) {{
             syscall(SYS_msgctl, msqid, IPC_RMID, NULL);
             return 1;

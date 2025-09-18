@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_mknod_tests():
@@ -20,8 +20,6 @@ def generate_mknod_tests():
 int main() {{
     const char *path = "/tmp/testfile_mknod_{mode_str.lower()}";
     
-    // The call might fail for non-root users (e.g., creating device files),
-    // which is an expected and safe outcome.
     syscall(SYS_mknod, path, {mode_str} | S_IRUSR | S_IWUSR, 0);
 
     unlink(path);

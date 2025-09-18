@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_pkey_free_tests():
@@ -19,7 +19,7 @@ def generate_pkey_free_tests():
 int main() {
     int pkey = syscall(SYS_pkey_alloc, 0, 0);
     if (pkey == -1) {
-        return 0; // Cannot test free if alloc fails.
+        return 0;
     }
 
     if (syscall(SYS_pkey_free, pkey) == -1) {

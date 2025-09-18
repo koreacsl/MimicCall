@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_io_getevents_tests():
@@ -23,13 +23,12 @@ def generate_io_getevents_tests():
 int main() {
     aio_context_t ctx = 0;
     struct io_event events[1];
-    struct timespec timeout = { .tv_sec = 0, .tv_nsec = 1000000 }; // 1ms
+    struct timespec timeout = { .tv_sec = 0, .tv_nsec = 1000000 };
 
     if (syscall(SYS_io_setup, 1, &ctx) < 0) {
         return 1;
     }
 
-    // This is expected to timeout and return 0 events, which is a safe test.
     syscall(SYS_io_getevents, ctx, 0, 1, events, &timeout);
 
     syscall(SYS_io_destroy, ctx);

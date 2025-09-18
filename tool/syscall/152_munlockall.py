@@ -13,7 +13,7 @@ def generate_munlockall_tests():
 #endif
 
 int main() {
-    mlockall(MCL_CURRENT); // Lock memory first to test unlocking
+    mlockall(MCL_CURRENT);
     
     int result = syscall(SYS_munlockall);
 

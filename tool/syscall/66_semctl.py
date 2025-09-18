@@ -49,7 +49,7 @@ int main() {{
         result = syscall(SYS_semctl, semid, 0, {cmd_value}, arg);
     }} else if (strcmp("{cmd_value}", "IPC_SET") == 0) {{
         struct semid_ds ds_buf;
-        syscall(SYS_semctl, semid, 0, IPC_STAT, &ds_buf); // First get current stats
+        syscall(SYS_semctl, semid, 0, IPC_STAT, &ds_buf);
         ds_buf.sem_perm.uid = getuid();
         ds_buf.sem_perm.gid = getgid();
         arg.buf = &ds_buf;
@@ -65,7 +65,7 @@ int main() {{
     }} else if (strcmp("{cmd_value}", "SETVAL") == 0) {{
         arg.val = 1;
         result = syscall(SYS_semctl, semid, 0, {cmd_value}, arg);
-    }} else {{ // GETNCNT, GETPID, GETVAL, GETZCNT
+    }} else {{
         result = syscall(SYS_semctl, semid, 0, {cmd_value}, 0);
     }}
 

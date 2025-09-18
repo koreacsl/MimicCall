@@ -10,33 +10,31 @@ arch_header = '''#define _GNU_SOURCE
 #include <unistd.h>
 #include <stdint.h>
 
-// arch_prctl command definitions
-#define ARCH_SET_GS 4097         // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SET_FS 4098         // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_FS 4099         // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_GS 4100         // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_CPUID 4113      // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SET_CPUID 4114      // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_XCOMP_SUPP 4129 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_XCOMP_PERM 4130 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_REQ_XCOMP_PERM 4131 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_XCOMP_GUEST_PERM 4132 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_REQ_XCOMP_GUEST_PERM 4133 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_MAP_VDSO_X32 8193   // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_MAP_VDSO_32 8194    // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_MAP_VDSO_64 8195    // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_UNTAG_MASK 16385  // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_GET_MAX_TAG_BITS 16387 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_ENABLE_TAGGED_ADDR 16386 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_FORCE_TAGGED_SVA 16388 // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
+#define ARCH_SET_GS 4097         
+#define ARCH_SET_FS 4098         
+#define ARCH_GET_FS 4099         
+#define ARCH_GET_GS 4100         
+#define ARCH_GET_CPUID 4113      
+#define ARCH_SET_CPUID 4114      
+#define ARCH_GET_XCOMP_SUPP 4129 
+#define ARCH_GET_XCOMP_PERM 4130 
+#define ARCH_REQ_XCOMP_PERM 4131 
+#define ARCH_GET_XCOMP_GUEST_PERM 4132 
+#define ARCH_REQ_XCOMP_GUEST_PERM 4133 
+#define ARCH_MAP_VDSO_X32 8193   
+#define ARCH_MAP_VDSO_32 8194    
+#define ARCH_MAP_VDSO_64 8195    
+#define ARCH_GET_UNTAG_MASK 16385  
+#define ARCH_GET_MAX_TAG_BITS 16387 
+#define ARCH_ENABLE_TAGGED_ADDR 16386 
+#define ARCH_FORCE_TAGGED_SVA 16388 
 
-#define ARCH_SHSTK_ENABLE 20481   // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SHSTK_DISABLE 20482  // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SHSTK_LOCK 20483     // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SHSTK_UNLOCK 20484   // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
-#define ARCH_SHSTK_STATUS 20485   // arm:arm64:mips64le:ppc64le:riscv64:s390x:???
+#define ARCH_SHSTK_ENABLE 20481   
+#define ARCH_SHSTK_DISABLE 20482  
+#define ARCH_SHSTK_LOCK 20483     
+#define ARCH_SHSTK_UNLOCK 20484   
+#define ARCH_SHSTK_STATUS 20485   
 
-// flags
 #define ARCH_SHSTK_SHSTK 1
 #define ARCH_SHSTK_WRSS  2
 '''

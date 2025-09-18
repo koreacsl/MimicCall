@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_fspick_tests():
@@ -16,22 +16,26 @@ def generate_fspick_tests():
 #ifndef SYS_fspick
 #define SYS_fspick 433
 #endif
+
+#ifndef O_PATH
+#define O_PATH 0x200000
+#endif
+
 #ifndef AT_EMPTY_PATH
 #define AT_EMPTY_PATH 0x1000
 #endif
 
-int main() {{
-    int dirfd = open("/tmp", O_PATH | O_DIRECTORY);
+int main(void) {{
+    int dirfd = open("/tmp", O_PATH | O_DIRECTORY, 0);
     if (dirfd < 0) return 1;
 
-    // Use a safe path. On EMPTY_PATH test, use the dirfd directly.
     const char* path = ({flag_value} & AT_EMPTY_PATH) ? "" : ".";
 
     int fd = syscall(SYS_fspick, dirfd, path, {flag_value});
     if (fd >= 0) {{
         close(fd);
     }}
-    
+
     close(dirfd);
     return 0;
 }}

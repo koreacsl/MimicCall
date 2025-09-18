@@ -1,20 +1,20 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_mkdir_tests():
     output_dir = "./tool/cfiles/83_mkdir"
     os.makedirs(output_dir, exist_ok=True)
 
-    open_modes = [
-        "S_IRWXU",
-        "S_IRUSR_S_IWUSR",
-        "S_IRWXG",
-        "S_IRWXO",
-        "S_IRWXU_S_IRWXG_S_IRWXO"
-    ]
+    mode_sets = {
+        "S_IRWXU": ["S_IRWXU"],
+        "S_IRUSR_S_IWUSR": ["S_IRUSR", "S_IWUSR"],
+        "S_IRWXG": ["S_IRWXG"],
+        "S_IRWXO": ["S_IRWXO"],
+        "S_IRWXU_S_IRWXG_S_IRWXO": ["S_IRWXU", "S_IRWXG", "S_IRWXO"],
+    }
 
-    for mode_name in open_modes:
-        c_mode_expression = mode_name.replace('_', ' | ')
+    for mode_name, macros in mode_sets.items():
+        mode_expr = " | ".join(macros)
         c_code = f"""#include <sys/stat.h>
 #include <unistd.h>
 #include <sys/syscall.h>
@@ -24,11 +24,11 @@ def generate_mkdir_tests():
 #endif
 
 int main() {{
-    const char* path = "/tmp/test_mkdir_dir";
+    const char* path = "/tmp/test_mkdir_dir_{mode_name}";
 
     rmdir(path);
 
-    if (syscall(SYS_mkdir, path, {c_mode_expression}) == -1) {{
+    if (syscall(SYS_mkdir, path, {mode_expr}) == -1) {{
         return 1;
     }}
 
@@ -45,4 +45,3 @@ int main() {{
 
 if __name__ == "__main__":
     generate_mkdir_tests()
-

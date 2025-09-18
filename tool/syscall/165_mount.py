@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_mount_tests():
-    output_dir = "./tool/cfiles/mount"
+    output_dir = "./tool/cfiles/165_mount"
     os.makedirs(output_dir, exist_ok=True)
 
     c_code = """#include <sys/mount.h>

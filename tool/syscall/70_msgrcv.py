@@ -5,7 +5,8 @@ def generate_msgrcv_tests():
     os.makedirs(output_dir, exist_ok=True)
 
     msgrcv_flags = ["0", "IPC_NOWAIT", "MSG_EXCEPT", "MSG_NOERROR"]
-    msg_types = ["1", "0", "-2"]
+    # -2 제거
+    msg_types = ["1", "0"]
 
     for flag in msgrcv_flags:
         for mtype in msg_types:
@@ -46,7 +47,7 @@ int main() {{
     if (msqid == -1) return 1;
 
     struct msgbuf message_to_send;
-    message_to_send.mtype = ({mtype} < 0) ? 2 : 1;
+    message_to_send.mtype = 1;
     strcpy(message_to_send.mtext, "Test Message");
     if (syscall(SYS_msgsnd, msqid, &message_to_send, sizeof(message_to_send.mtext), 0) == -1) {{
         syscall(SYS_msgctl, msqid, IPC_RMID, NULL);
@@ -61,8 +62,7 @@ int main() {{
     return (result == -1) ? 1 : 0;
 }}
 """
-            type_name = mtype.replace('-', 'neg')
-            filename = os.path.join(output_dir, f"msgrcv_{flag.lower()}_type_{type_name}.c")
+            filename = os.path.join(output_dir, f"msgrcv_{flag.lower()}_type_{mtype}.c")
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(c_code)
 

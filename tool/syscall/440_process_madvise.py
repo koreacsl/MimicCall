@@ -18,18 +18,25 @@ def generate_process_madvise_tests():
 #include <sys/uio.h>
 #include <unistd.h>
 #include <sys/syscall.h>
+#include <errno.h>
+#include <stdio.h>
 
 #ifndef SYS_process_madvise
 #define SYS_process_madvise 440
+#endif
+
+#ifndef SYS_pidfd_open
+#define SYS_pidfd_open 434
 #endif
 
 #ifndef {flag_name}
 #define {flag_name} {flag_value}
 #endif
 
-int main() {{
+int main(void) {{
     void *addr = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (addr == MAP_FAILED) {{
+        perror("mmap");
         return 1;
     }}
 
@@ -37,7 +44,19 @@ int main() {{
     vec.iov_base = addr;
     vec.iov_len = 4096;
 
-    if (syscall(SYS_process_madvise, getpid(), &vec, 1, {flag_name}, 0) == -1) {{
+    int pidfd = (int)syscall(SYS_pidfd_open, getpid(), 0);
+    if (pidfd == -1) {{
+        perror("pidfd_open");
+        munmap(addr, 4096);
+        return 1;
+    }}
+
+    long rc = syscall(SYS_process_madvise, pidfd, &vec, 1, {flag_name}, 0);
+
+    int saved_errno = errno;
+    close(pidfd);
+
+    if (rc == -1) {{
         munmap(addr, 4096);
         return 1;
     }}

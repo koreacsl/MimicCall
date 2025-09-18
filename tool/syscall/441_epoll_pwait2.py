@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_epoll_pwait2_tests():
@@ -24,11 +24,10 @@ int main() {
     if (epfd == -1) return 1;
 
     struct epoll_event events[1];
-    struct timespec timeout = { .tv_sec = 0, .tv_nsec = 1000000 }; // 1ms
+    struct timespec timeout = { .tv_sec = 0, .tv_nsec = 1000000 };
     sigset_t sigmask;
     sigemptyset(&sigmask);
     
-    // This will timeout and return 0, which is a safe test.
     syscall(SYS_epoll_pwait2, epfd, events, 1, &timeout, &sigmask, sizeof(sigset_t));
 
     close(epfd);

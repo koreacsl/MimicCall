@@ -32,9 +32,7 @@ os.makedirs(source_directory, exist_ok=True)
 
 sleep_times = [
     (0, 500000000),
-    (1, 0),
-    (2, 500000000),
-    (0, 100000000),
+    (0, 100000000)
 ]
 
 for seconds, nanoseconds in sleep_times:

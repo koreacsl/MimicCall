@@ -11,7 +11,7 @@ FS_ACCESS_FLAGS = {
     "MAKE_SOCK": 1 << 9, "MAKE_FIFO": 1 << 10, "MAKE_BLOCK": 1 << 11,
     "MAKE_SYM": 1 << 12, "REFER": 1 << 13, "TRUNCATE": 1 << 14,
 }
-NET_ACCESS_FLAGS = { "BIND_TCP": 1 << 0, "CONNECT_TCP": 1 << 1 }
+NET_ACCESS_FLAGS = {"BIND_TCP": 1 << 0, "CONNECT_TCP": 1 << 1}
 
 C_TEMPLATE = textwrap.dedent("""\
     #define _GNU_SOURCE
@@ -22,7 +22,8 @@ C_TEMPLATE = textwrap.dedent("""\
     #include <fcntl.h>
     #include <errno.h>
     #include <sys/syscall.h>
-    #include <netinet/in.h>
+    #include <stdint.h>
+    #include <arpa/inet.h>
 
     #ifndef __NR_landlock_create_ruleset
     #define __NR_landlock_create_ruleset 444
@@ -34,9 +35,9 @@ C_TEMPLATE = textwrap.dedent("""\
     #define LANDLOCK_RULE_PATH_BENEATH 1
     #define LANDLOCK_RULE_NET_PORT 2
 
-    struct landlock_ruleset_attr {{ __u64 handled_access_fs; __u64 handled_access_net; }};
-    struct landlock_path_beneath_attr {{ __u64 allowed_access; __s32 parent_fd; }};
-    struct landlock_net_port_attr {{ __u64 allowed_access; __s16 port; }};
+    struct landlock_ruleset_attr {{ uint64_t handled_access_fs; uint64_t handled_access_net; }};
+    struct landlock_path_beneath_attr {{ uint64_t allowed_access; int32_t parent_fd; }};
+    struct landlock_net_port_attr {{ uint64_t allowed_access; int16_t port; }};
 
     int main(int argc, char const *argv[]) {{
         const struct landlock_ruleset_attr attr = {{

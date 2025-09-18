@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_setfsgid_tests():
@@ -17,7 +17,6 @@ def generate_setfsgid_tests():
 #endif
 
 int main() {
-    // To test safely, set the fsgid to the current real GID.
     gid_t current_gid = syscall(SYS_getgid);
     syscall(SYS_setfsgid, current_gid);
     return 0;

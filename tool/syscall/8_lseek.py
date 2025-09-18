@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_lseek_tests():
-    output_dir = "./tool/cfiles/lseek"
+    output_dir = "./tool/cfiles/8_lseek"
     os.makedirs(output_dir, exist_ok=True)
 
     seek_whence_flags = [

@@ -27,7 +27,7 @@ int main() {
     close(fd_old);
 
     if (syscall(SYS_rename, old_path, new_path) == -1) {
-        remove(old_path); // Clean up on failure
+        remove(old_path);
         return 1;
     }
 

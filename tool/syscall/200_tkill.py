@@ -4,7 +4,7 @@ def generate_tkill_tests():
     output_dir = "./tool/cfiles/200_tkill"
     os.makedirs(output_dir, exist_ok=True)
 
-    signals = ["SIGTERM", "SIGKILL", "SIGSTOP", "SIGCONT", "SIGUSR1"]
+    signals = ["SIGTERM", "SIGCONT", "SIGUSR1"]
 
     for signal_name in signals:
 

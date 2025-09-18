@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_migrate_pages_tests():
@@ -55,7 +55,7 @@ int main() {
     int max_node_id = get_available_nodes(&old_nodes, max_node_count);
     if (max_node_id < 0) {
         munmap(addr, page_size);
-        return 0; // Not a failure if system is not NUMA.
+        return 0;
     }
     
     unsigned long new_nodes = old_nodes;

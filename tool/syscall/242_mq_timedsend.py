@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_mq_timedsend_tests():
@@ -35,7 +35,7 @@ int main() {
     }
 
     clock_gettime(CLOCK_REALTIME, &timeout);
-    timeout.tv_sec += 1; // 1 second timeout
+    timeout.tv_sec += 1;
 
     if (syscall(SYS_mq_timedsend, mqd, message, strlen(message), 0, &timeout) == -1) {
         close(mqd);
@@ -48,7 +48,7 @@ int main() {
     return 0;
 }
 """
-    filename = os.path.join(output_dir, "mq_timedsend.c")
+    filename = os.path.join(output_dir, "mq_timedsend_0.c")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(c_code)
 

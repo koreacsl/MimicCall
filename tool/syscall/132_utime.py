@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_utime_test():
@@ -23,7 +23,6 @@ int main() {
     }
     close(fd);
 
-    // Using NULL sets the access and modification times to the current time.
     if (syscall(SYS_utime, path, NULL) == -1) {
         unlink(path);
         return 1;

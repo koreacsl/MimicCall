@@ -2,7 +2,7 @@ import os
 
 def generate_fallocate_tests():
     output_dir = "./tool/cfiles/285_fallocate"
-
+    os.makedirs(output_dir, exist_ok=True)
     fallocate_modes = [
         ("fallocate_keep_size", "FALLOC_FL_KEEP_SIZE"),
         ("fallocate_punch_hole", "FALLOC_FL_PUNCH_HOLE"),
@@ -35,6 +35,4 @@ int main() {{
             f.write(c_code)
 
 if __name__ == "__main__":
-    output_dir = "./tool/cfiles/fallocate"
-    os.makedirs(output_dir, exist_ok=True)
     generate_fallocate_tests()

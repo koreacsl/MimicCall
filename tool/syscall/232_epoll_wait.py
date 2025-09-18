@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_epoll_wait_tests():
@@ -22,7 +22,6 @@ int main() {
 
     struct epoll_event events[1];
     
-    // This will timeout after 1ms and return 0, which is a safe test.
     syscall(SYS_epoll_wait, epfd, events, 1, 1);
 
     close(epfd);

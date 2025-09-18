@@ -1,7 +1,7 @@
 import os
 
 def generate_madvise_tests():
-    output_dir = "./tool/cfiles/madvise"
+    output_dir = "./tool/cfiles/28_madvise"
     os.makedirs(output_dir, exist_ok=True)
 
     madvise_flags = {

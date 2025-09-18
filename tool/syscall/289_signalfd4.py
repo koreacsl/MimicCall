@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 def generate_signalfd4_tests():
@@ -17,12 +16,16 @@ def generate_signalfd4_tests():
 #include <sys/syscall.h>
 #include <sys/signalfd.h>
 
+#define KERNEL_SIGSET_BYTES 8
+
 #ifndef SYS_signalfd4
 #define SYS_signalfd4 289
 #endif
+
 #ifndef SYS_rt_sigprocmask
 #define SYS_rt_sigprocmask 14
 #endif
+
 #ifndef SYS_kill
 #define SYS_kill 62
 #endif
@@ -35,11 +38,11 @@ int main() {{
     sigemptyset(&mask);
     sigaddset(&mask, SIGUSR1);
 
-    if (syscall(SYS_rt_sigprocmask, SIG_BLOCK, &mask, NULL, sizeof(mask)) == -1) {{
+    if (syscall(SYS_rt_sigprocmask, SIG_BLOCK, &mask, NULL, KERNEL_SIGSET_BYTES) == -1) {{
         return 1;
     }}
 
-    sfd = syscall(SYS_signalfd4, -1, &mask, sizeof(mask), {flag_value});
+    sfd = syscall(SYS_signalfd4, -1, &mask, KERNEL_SIGSET_BYTES, {flag_value});
     if (sfd == -1) {{
         return 1;
     }}

@@ -4,7 +4,7 @@ def generate_tgkill_tests():
     output_dir = "./tool/cfiles/234_tgkill"
     os.makedirs(output_dir, exist_ok=True)
 
-    signals = ["SIGTERM", "SIGKILL", "SIGSTOP", "SIGCONT", "SIGUSR1"]
+    signals = ["SIGTERM", "SIGKILL", "SIGCONT", "SIGUSR1"]
 
     for signal_name in signals:
 

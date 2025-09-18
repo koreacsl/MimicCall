@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_pkey_alloc_tests():
@@ -33,17 +33,15 @@ def generate_pkey_alloc_tests():
 int main() {{
     int pkey = syscall(SYS_pkey_alloc, 0, {flag_value});
     if (pkey == -1) {{
-        // This may fail on systems without pkey support, which is acceptable.
         return 0;
     }}
 
-    // Clean up immediately to leave the system unchanged.
     syscall(SYS_pkey_free, pkey);
 
     return 0;
 }}
 """
-        filename = os.path.join(output_dir, f"test_{flag_name}.c")
+        filename = os.path.join(output_dir, f"pkey_alloc_{flag_name}.c")
         with open(filename, "w", encoding="utf-8") as f:
             f.write(c_code)
 

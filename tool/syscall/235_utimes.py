@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+
 import os
 
 def generate_utimes_test():
-    output_dir = "./tool/cfiles/utimes"
+    output_dir = "./tool/cfiles/235_utimes"
     os.makedirs(output_dir, exist_ok=True)
 
     c_code = """#include <sys/time.h>
@@ -22,7 +22,6 @@ int main() {
     }
     close(fd);
 
-    // Using NULL for the timesval array sets access and modification times to the current time.
     if (syscall(SYS_utimes, path, NULL) == -1) {
         unlink(path);
         return 1;

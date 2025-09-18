@@ -11,26 +11,27 @@ def generate_rt_sigprocmask_tests():
     }
 
     for flag, name in how_flags.items():
-        c_code = f"""#include <signal.h>
+        c_code = f"""#define _GNU_SOURCE
+#include <signal.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
 
-#ifndef SYS_rt_sigprocmask
-#define SYS_rt_sigprocmask 14
+#ifndef KERNEL_SIGSET_BYTES
+#define KERNEL_SIGSET_BYTES 8
 #endif
 
-int main() {{
+int main(void) {{
     sigset_t set;
-    
     sigemptyset(&set);
     sigaddset(&set, SIGUSR1);
 
-    int result = syscall(SYS_rt_sigprocmask, {flag}, &set, NULL, sizeof(sigset_t));
-
-    if (result == -1) {{
+    long ret = syscall(SYS_rt_sigprocmask, {flag}, &set, NULL, KERNEL_SIGSET_BYTES);
+    if (ret == -1) {{
+        perror("syscall(SYS_rt_sigprocmask)");
         return 1;
     }}
-
     return 0;
 }}
 """
