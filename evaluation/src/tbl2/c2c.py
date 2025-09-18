@@ -16,11 +16,10 @@ def load_vuln_data():
             vuln_map[func] = syscalls
     return vuln_map
 
-# .out 파일에서 piecewiseMaster 필터만 추출
 def load_piecewise_master(out_path):
     with open(out_path, "r") as f:
         try:
-            raw = eval(f.read())  # 안전한 환경에서만 사용
+            raw = eval(f.read())
             return set(raw.get("piecewiseMaster", []))
         except Exception as e:
             print(f"[!] {out_path} 파싱 실패: {e}")
@@ -32,7 +31,7 @@ def evaluate_piecewise_master():
     vuln_binaries = 0
     filters_with_mimiccall = 0
     unprotected_funcs = set()
-    func_count_by_filter = {}  # ✅ 필터 이름별 허용된 취약 함수 수
+    func_count_by_filter = {}
 
     for root, _, files in os.walk(FILTER_DIR):
         for file in files:
@@ -58,10 +57,9 @@ def evaluate_piecewise_master():
                 vuln_binaries += 1
                 unprotected_funcs.update(allowed_funcs)
 
-            filter_name = os.path.relpath(path, FILTER_DIR)  # 상대 경로로 필터 이름 구분
+            filter_name = os.path.relpath(path, FILTER_DIR)
             func_count_by_filter[filter_name] = len(allowed_funcs)
 
-    # 출력
     print("Tool: C2C (piecewiseMaster 기준)")
     print(f"# of Filters (Binaries): {total_filters}")
     print(f"# of Vulnerable Binaries: {vuln_binaries}")

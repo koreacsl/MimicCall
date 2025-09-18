@@ -5,26 +5,24 @@ import csv
 CONFINE_DIR = "./datasets/filters/confine"
 VULN_CSV_PATH = "./datasets/cve_results.csv"
 
-# === 1. CSV 파일에서 취약 함수와 해당 시스템콜 목록 읽기 ===
 func_to_syscalls = {}
 with open(VULN_CSV_PATH, newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         func = row['해당함수'].strip()
         syscalls = [s.strip() for s in row['시스템콜 목록'].split(',')]
-        if len(set(syscalls)) >= 2:  # MimicCall 가능한 경우만 사용
+        if len(set(syscalls)) >= 2:
             func_to_syscalls[func] = set(syscalls)
 
 all_mimic_syscalls = set()
 for s in func_to_syscalls.values():
     all_mimic_syscalls.update(s)
 
-# === 2. 필터 파일들 분석 ===
 vulnerable_binary_count = 0
 filters_with_mimiccall = 0
 triggered_vuln_functions = set()
 total_binaries = 0
-func_count_by_binary = {}  # ✅ 바이너리별 허용된 취약 함수 수
+func_count_by_binary = {}
 
 for fname in os.listdir(CONFINE_DIR):
     if not fname.endswith(".json"):
@@ -52,10 +50,9 @@ for fname in os.listdir(CONFINE_DIR):
         filters_with_mimiccall += 1
         triggered_vuln_functions.update(this_binary_triggered_funcs)
 
-    binary_name = os.path.splitext(fname)[0]  # 예: nginx.json → nginx
+    binary_name = os.path.splitext(fname)[0]
     func_count_by_binary[binary_name] = len(this_binary_triggered_funcs)
 
-# === 3. 출력 ===
 print(f"Tool: Confine")
 print("Total CVE functions with ≥2 syscalls:", len(func_to_syscalls))
 print(f"# of Filters (Binaries): {total_binaries}")

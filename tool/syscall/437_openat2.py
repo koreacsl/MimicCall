@@ -12,19 +12,16 @@ def generate_openat2_tests():
     ]
 
     for flag in open_flags:
-        # 경로: O_TMPFILE은 디렉터리를, 나머지는 파일(/dev/null)을 대상으로
         path = '"/tmp"' if flag == "O_TMPFILE" else '"/dev/null"'
 
-        # 플래그 조합 규칙
         if flag == "O_PATH":
-            final_flags = "O_PATH"                  # O_PATH는 단독 사용
+            final_flags = "O_PATH"                 
             mode_expr   = "0"
         elif flag == "O_TMPFILE":
-            final_flags = "O_TMPFILE | O_RDWR"      # O_TMPFILE은 R/W 동반 + mode 필요
+            final_flags = "O_TMPFILE | O_RDWR"      
             mode_expr   = "0600"
         else:
             final_flags = f"O_RDWR | {flag}"
-            # O_CREAT 조합일 때만 mode 의미 있음(넣어도 무해)
             mode_expr   = "0644"
 
         c_code = f"""#define _GNU_SOURCE
@@ -34,7 +31,6 @@ def generate_openat2_tests():
 #include <string.h>
 #include <stdint.h>
 
-/* open_how 정의를 위해 linux/openat2.h 시도, 없으면 fallback */
 #if __has_include(<linux/openat2.h>)
   #include <linux/openat2.h>
 #else
@@ -49,7 +45,6 @@ def generate_openat2_tests():
 #define SYS_openat2 437
 #endif
 
-/* 일부 환경에서 FASYNC 매크로가 없을 수 있음 → O_ASYNC로 매핑 */
 #ifndef FASYNC
   #ifdef O_ASYNC
     #define FASYNC O_ASYNC
@@ -58,7 +53,6 @@ def generate_openat2_tests():
   #endif
 #endif
 
-/* 일부 헤더에는 O_TMPFILE가 없을 수 있음 */
 #ifndef O_TMPFILE
 #define O_TMPFILE 020000000
 #endif

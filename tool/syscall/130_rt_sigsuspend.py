@@ -12,7 +12,6 @@ template = template = """#define _GNU_SOURCE
 #include <errno.h>
 
 void signal_handler(int sig) {
-    printf("Child received signal: %d. Exiting sigsuspend.\\n", sig);
 }
 
 int main() {
@@ -65,7 +64,6 @@ int main() {
         }
 
         waitpid(child_pid, NULL, 0);
-        printf("Child process terminated.\\n");
     }
 
     return 0;

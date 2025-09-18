@@ -35,7 +35,7 @@ def evaluate_syspart():
     vuln_binaries = 0
     filters_with_mimiccall = 0
     unprotected_funcs = set()
-    func_count_by_binary = {}  # ✅ 바이너리별 허용된 취약 함수 수
+    func_count_by_binary = {}
 
     for binary in os.listdir(FILTER_DIR):
         binary_dir = os.path.join(FILTER_DIR, binary)
@@ -63,7 +63,6 @@ def evaluate_syspart():
 
         func_count_by_binary[binary] = len(allowed_funcs)
 
-    # 결과 출력
     print("Tool: SYSPART (serving_syscalls 기반)")
     print(f"# of Filters (Binaries): {total_filters}")
     print(f"# of Vulnerable Binaries: {vuln_binaries}")

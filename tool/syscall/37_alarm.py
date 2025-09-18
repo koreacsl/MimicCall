@@ -7,10 +7,8 @@ template = """#define _GNU_SOURCE
 
 int main() {
     int remaining_time = syscall(SYS_alarm, 0);
-    printf("Previous alarm remaining time: %d seconds\\n", remaining_time);
 
     if (remaining_time == 0) {
-        printf("No previous alarm was set.\\n");
     }
 
     return 0;

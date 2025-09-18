@@ -31,7 +31,7 @@ def evaluate_tsp():
     filters_with_mimiccall = 0
     unprotected_funcs = set()
 
-    func_count_by_binary = {}  # ✅ 바이너리별 허용 함수 개수 저장
+    func_count_by_binary = {}
 
     for binary in os.listdir(FILTER_DIR):
         binary_dir = os.path.join(FILTER_DIR, binary)
@@ -57,9 +57,8 @@ def evaluate_tsp():
             vuln_binaries += 1
             unprotected_funcs.update(allowed_funcs)
 
-        func_count_by_binary[binary] = len(allowed_funcs)  # ✅ 바이너리 이름 → 함수 수 매핑 저장
+        func_count_by_binary[binary] = len(allowed_funcs)
 
-    # 결과 출력
     print("Tool: TSP (fixed_mainloop 기준)")
     print(f"# of Filters (Binaries): {total_filters}")
     print(f"# of Vulnerable Binaries: {vuln_binaries}")
@@ -76,7 +75,6 @@ def evaluate_tsp():
 
         avg = sum(func_count_by_binary.values()) / len(func_count_by_binary)
         print(f"[+] Avg vulnerable functions per filter: {avg:.2f}")
-
-# --- [Main 실행] ---
+=
 if __name__ == "__main__":
     evaluate_tsp()

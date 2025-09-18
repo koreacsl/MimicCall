@@ -21,7 +21,6 @@ int main() {
         exit(1);
     }
 
-    printf("Sleep completed successfully.\\n");
     exit(0);
 }
 """

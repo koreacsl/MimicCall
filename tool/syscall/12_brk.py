@@ -11,9 +11,7 @@ int main() {
     void *current_brk = sbrk(0);
     void *new_brk = (void *){intptr_value};
     
-    if (syscall(SYS_brk, new_brk) == 0) {
-        printf("brk succeeded: %p\\n", new_brk);
-    } else {
+    if (syscall(SYS_brk, new_brk) != 0) {
         perror("brk failed");
     }
     return 0;

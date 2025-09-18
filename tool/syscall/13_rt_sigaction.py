@@ -14,7 +14,6 @@ template = r"""#define _GNU_SOURCE
 #endif
 
 static void handler_basic(int sig) {
-    printf("Received signal: %d\n", sig);
     if (sig == SIGCHLD) {
         while (waitpid(-1, NULL, WNOHANG) > 0) {}
     }

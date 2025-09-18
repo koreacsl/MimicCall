@@ -30,7 +30,7 @@ def evaluate_sysfilter():
     vuln_binaries = 0
     filters_with_mimiccall = 0
     unprotected_funcs = set()
-    func_count_by_binary = {}  # ✅ 바이너리별 허용 취약 함수 개수
+    func_count_by_binary = {}
 
     for binary in os.listdir(FILTER_DIR):
         binary_dir = os.path.join(FILTER_DIR, binary)

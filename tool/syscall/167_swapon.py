@@ -7,8 +7,8 @@ def generate_swapon_tests():
 
     flags = {
         "none": "0",
-        "prefer": "0x8000",   # SWAP_FLAG_PREFER
-        "discard": "0x10000"  # SWAP_FLAG_DISCARD
+        "prefer": "0x8000",
+        "discard": "0x10000"
     }
 
     for flag_name, flag_value in flags.items():
@@ -56,7 +56,6 @@ int main(void) {{
     if (rc != 0) {{
         rc = system("mkswap -f /tmp/tmpswapfile_root_{flag_name}");
         if (rc != 0) {{
-            fprintf(stderr, "mkswap failed (rc=%d)\\n", rc);
             unlink(path);
             return 1;
         }}

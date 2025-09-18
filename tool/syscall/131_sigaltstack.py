@@ -20,7 +20,6 @@ template = """#define _GNU_SOURCE
 volatile sig_atomic_t received = 0;
 
 void signal_handler(int sig) {
-    printf("Child received signal: %d on alternate stack.\\n", sig);
     received = 1;
 }
 
@@ -51,8 +50,6 @@ int main() {
         ss.ss_size = STACK_SIZE;
         ss.ss_flags = {sigaltstack_flag};
 
-        printf("Child setting up sigaltstack with flag: {sigaltstack_flag}\\n");
-
         if (syscall(SYS_sigaltstack, &ss, &old_ss) == -1) {
             perror("sigaltstack failed");
             free(ss.ss_sp);
@@ -74,8 +71,6 @@ int main() {
         write(pipefd[1], "R", 1);
         close(pipefd[1]);
 
-        printf("Child waiting for SIGUSR1...\\n");
-
         while (!received) {
             pause();
         }
@@ -92,15 +87,12 @@ int main() {
 
         sleep(0.5);
 
-        printf("Parent sending SIGUSR1 to child (PID: %d)\\n", child_pid);
         if (kill(child_pid, SIGUSR1) == -1) {
             perror("kill failed");
             return 1;
         }
 
-        printf("Parent waiting for child to complete...\\n");
         waitpid(child_pid, NULL, 0);
-        printf("Child process terminated.\\n");
     }
 
     return 0;

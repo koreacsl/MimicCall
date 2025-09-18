@@ -5,7 +5,6 @@ def generate_msgrcv_tests():
     os.makedirs(output_dir, exist_ok=True)
 
     msgrcv_flags = ["0", "IPC_NOWAIT", "MSG_EXCEPT", "MSG_NOERROR"]
-    # -2 제거
     msg_types = ["1", "0"]
 
     for flag in msgrcv_flags:
