@@ -12,46 +12,48 @@ log_folders = [
     if os.path.isdir(os.path.join(base_log_folder, folder))
 ]
 
-function_pattern = re.compile(r"\s*[\+\-]*\((\d+)\)\s+([\w\d_.]+)")
+function_pattern = re.compile(r"\((\d+)\)\s+([\w\d_.]+)")
 syscall_prefix_pattern = re.compile(r"__x64_sys_([\w\d_]+)")
+
 
 def parse_syscall_trace(filepath):
     results = []
-    with open(filepath, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except Exception as e:
+        print(f"Error reading file {filepath}: {e}")
+        return []
 
     in_syscall_block = False
     current_syscall = None
-    base_indent = None
+    base_indent = -1
 
     for line in lines:
         match = function_pattern.search(line)
         if not match:
             continue
-
-        indent_level = line.index(match.group(0))
+        
+        indent_level = line.find(match.group(0))
         _, function = match.groups()
-
-        if function == "x64_sys_call":
+        syscall_match = syscall_prefix_pattern.match(function)
+        if syscall_match:
             in_syscall_block = True
-            current_syscall = None
+            current_syscall = syscall_match.group(1)
             base_indent = indent_level
             continue
 
-        if in_syscall_block and current_syscall is None:
-            match_syscall = syscall_prefix_pattern.match(function)
-            if match_syscall:
-                current_syscall = match_syscall.group(1)
-                continue
+        if in_syscall_block and indent_level < base_indent:
+            in_syscall_block = False
+            current_syscall = None
+            base_indent = -1
 
-        if in_syscall_block and current_syscall:
-            if indent_level <= base_indent:
-                in_syscall_block = False
-                current_syscall = None
-                continue
-            results.append((os.path.basename(filepath), current_syscall, function))
+        if in_syscall_block and indent_level > base_indent:
+            filename = os.path.basename(filepath)
+            results.append((filename, current_syscall, function))
 
     return results
+
 
 for log_folder in log_folders:
     folder_name = os.path.basename(log_folder)
@@ -61,12 +63,14 @@ for log_folder in log_folders:
         writer = csv.writer(csvfile)
         writer.writerow(["filename", "syscall", "function_name"])
 
+        total_rows_written = 0
         for log_file in os.listdir(log_folder):
             log_path = os.path.join(log_folder, log_file)
             if os.path.isfile(log_path) and log_file.endswith(".txt"):
-                print(f"Processing {log_file}...")
                 try:
                     rows = parse_syscall_trace(log_path)
-                    writer.writerows(rows)
+                    if rows:
+                        writer.writerows(rows)
+                        total_rows_written += len(rows)
                 except Exception as e:
-                    print(f"Error in {log_file}: {e}")
+                    print(f"  ❌ Error processing {log_file}: {e}")

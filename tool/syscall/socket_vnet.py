@@ -123,7 +123,7 @@ IOTLB_C = dedent(r"""
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/virtio_config.h>
-#include <uapi/linux/vhost.h>
+#include <linux/vhost.h>
 
 #ifndef O_CLOEXEC
 #define O_CLOEXEC 02000000

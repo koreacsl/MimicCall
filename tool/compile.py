@@ -30,7 +30,6 @@ def load_constants(filepath):
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
-                
                 match = re.match(r'^([a-zA-Z0-9_]+)\s*=\s*([^,]+)', line)
                 if match:
                     const_name = match.group(1)
@@ -38,7 +37,6 @@ def load_constants(filepath):
                     constants[const_name] = const_value
     except Exception as e:
         print(f"Error loading constants file: {e}")
-        
     print(f"Loaded {len(constants)} constants.")
     return constants
 
@@ -46,23 +44,18 @@ def log_error(message):
     with open(ERROR_LOG, "a", encoding="utf-8") as log_file:
         log_file.write(f"{datetime.now()} - {message}\n")
 
-
 def log_long_run(exe_path, duration):
     with open(LONG_LOG, "a", encoding="utf-8") as log_file:
         log_file.write(f"{datetime.now()} - {exe_path} execution time exceeded {duration:.2f}s\n")
 
-
 def try_run(output_file, rel_path):
     global run_success, run_failed, sudo_ran
-
     start = time.time()
     try:
         result = subprocess.run([output_file], capture_output=True, text=True, timeout=5)
         duration = time.time() - start
-        
         if duration > 3:
             log_long_run(output_file, duration)
-
         if result.returncode == 0:
             run_success += 1
         else:
@@ -72,18 +65,15 @@ def try_run(output_file, rel_path):
                 "Permission denied" in stderr or
                 result.returncode != 0
             )
-
             if should_retry_with_sudo:
                 sudo_start = time.time()
                 sudo_result = subprocess.run(["sudo", output_file], capture_output=True, text=True, timeout=5)
                 sudo_duration = time.time() - sudo_start
                 if sudo_duration > 3:
                     log_long_run(output_file + " [sudo]", sudo_duration)
-                
                 if sudo_result.returncode == 0:
                     run_success += 1
                     sudo_ran.append(os.path.join(rel_path, os.path.basename(output_file)))
-                    
                     dest_dir = os.path.join(ROOT_OUT_DIR, rel_path)
                     os.makedirs(dest_dir, exist_ok=True)
                     shutil.move(output_file, os.path.join(dest_dir, os.path.basename(output_file)))
@@ -91,7 +81,6 @@ def try_run(output_file, rel_path):
                     run_failed += 1
             else:
                 run_failed += 1
-
     except subprocess.TimeoutExpired:
         duration = time.time() - start
         log_long_run(output_file, duration)
@@ -99,11 +88,23 @@ def try_run(output_file, rel_path):
     except Exception:
         run_failed += 1
 
+def pick_link_libs(folder_name: str):
+    name = folder_name.lower()
+    libs = set()
+
+    if re.search(r'(^|[_-])(add_key|request_key|keyctl)(_|$)', name):
+        libs.add("-lkeyutils")
+
+    if any(tok in name for tok in ["clock", "timer", "mq_", "mq-", "eventfd"]):
+        libs.add("-lrt")
+
+    if any(tok in name for tok in ["mbind", "mempolicy", "move_pages", "lnuma", "numa"]):
+        libs.add("-lnuma")
+
+    return sorted(libs)
 
 def compile_c_files():
-    """Compiles all C files within SRC_DIR."""
     global total_compiled
-    
     constants_db = load_constants(CONSTANTS_FILE)
 
     for log in [ERROR_LOG, LONG_LOG]:
@@ -122,31 +123,24 @@ def compile_c_files():
             rel_path = os.path.relpath(root, SRC_DIR)
             out_dir = os.path.join(OUT_DIR, rel_path)
             os.makedirs(out_dir, exist_ok=True)
-            
+
             bin_name = os.path.splitext(file)[0]
             output_file = os.path.join(out_dir, bin_name)
 
             folder_name = os.path.basename(root)
-            use_lrt = folder_name in ["clock_adjtime", "timer", "mq_attr", "mq_notify", "mq_timedsend_receive", "eventfd"]
-            use_lnuma = folder_name in ["mbind", "mempolicy", "pages", "lnuma"]
-            use_lnuma = folder_name in ["248_add_key", "249_request_key"]
+            link_libs = pick_link_libs(folder_name)
 
-            cmd = ["gcc", "-Wall", "-Wextra", "-O2", "-pg", "-o", output_file, cfile]
-            if use_lrt: cmd.append("-lrt")
-            if use_lnuma: cmd.append("-lnuma")
+            cmd = ["gcc", "-Wall", "-Wextra", "-O2", "-D_GNU_SOURCE", "-pg", "-o", output_file, cfile] + link_libs
 
             result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='ignore')
-            
+
             if result.returncode == 0:
-                opts = [opt for use, opt in zip([use_lrt, use_lnuma], ["-lrt", "-lnuma"]) if use]
-                opts_str = f" ({', '.join(opts)})" if opts else ""
+                opts_str = f" ({', '.join(link_libs)})" if link_libs else ""
                 print(f"Compile success: {cfile} -> {output_file}{opts_str}")
                 total_compiled += 1
                 try_run(output_file, rel_path)
             else:
-                # Find 'undeclared' errors and attempt to auto-fix
                 undeclared_vars = set(re.findall(r"['‘]([^'’]+)['’] undeclared", result.stderr))
-                
                 defines_to_add = []
                 if undeclared_vars and constants_db:
                     for var in undeclared_vars:
@@ -155,15 +149,14 @@ def compile_c_files():
 
                 if defines_to_add:
                     print(f"Found undeclared constants in '{cfile}'. Attempting to auto-fix...")
-                    
                     temp_c_file = os.path.join(out_dir, "temp_" + file)
                     try:
                         with open(temp_c_file, 'w', encoding='utf-8') as f_temp:
                             f_temp.writelines(defines_to_add)
                             with open(cfile, 'r', encoding='utf-8') as f_orig:
                                 f_temp.write(f_orig.read())
-                        
-                        retry_cmd = cmd[:-1] + [temp_c_file]
+
+                        retry_cmd = ["gcc", "-Wall", "-Wextra", "-O2", "-D_GNU_SOURCE", "-pg", "-o", output_file, temp_c_file] + link_libs
                         retry_result = subprocess.run(retry_cmd, capture_output=True, text=True, encoding='utf-8', errors='ignore')
 
                         if retry_result.returncode == 0:
@@ -195,7 +188,6 @@ def compile_c_files():
                     )
                     print(msg)
                     log_error(msg)
-
 
 if __name__ == "__main__":
     compile_c_files()
