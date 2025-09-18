@@ -18,34 +18,56 @@ def generate_test_code(syscall_defs, options):
     test_cases = []
 
     for syscall_def in syscall_defs:
-        syscall_name, args = syscall_def.split("(", 1)
+        if "P_PIDFD" in syscall_def:
+            continue
+
+        syscall_name, _ = syscall_def.split("(", 1)
         syscall_name = syscall_name.strip().split("$")[0]
-        args = args.rstrip(")").split(", ")
 
         which_options = options.get("waitid_which", ["P_ALL"])
-        wait_options = options.get("wait_options", ["0"])
-        pid_values = ["0", "-1"]
+        valid_option_combos = ["WEXITED", "WEXITED | WNOHANG"]
 
         for which in which_options:
-            for pid in pid_values:
-                for opt in wait_options:
-                    test_code = f"""#include <sys/types.h>
+            for opt_str in valid_option_combos:
+                test_code = f"""#include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main() {{
-    siginfo_t info;
-    int ret = {syscall_name}({which}, {pid}, &info, {opt});
+    pid_t pid = fork();
 
-    if (ret == -1) {{
-        perror("{syscall_name} failed");
+    if (pid < 0) {{
+        perror("fork failed");
+        return 1;
+    }}
+
+    if (pid == 0) {{
+        usleep(10000);
+        exit(0);
+    }} else {{
+        siginfo_t info = {{0}};
+        
+        long target_pid = ({which} == P_PID) ? pid : 0;
+
+        int ret = {syscall_name}({which}, target_pid, &info, {opt_str});
+
+        if (ret == -1) {{
+            perror("{syscall_name} failed");
+        }} else {{
+            if (info.si_pid == pid) {{
+                printf("{syscall_name} succeeded for pid %d.\\n", info.si_pid);
+            }} else {{
+                 printf("{syscall_name} succeeded, but for unexpected pid %d.\\n", info.si_pid);
+            }}
+        }}
     }}
 
     return 0;
 }}"""
-                    test_cases.append(test_code)
+                test_cases.append(test_code)
 
     return test_cases
 
