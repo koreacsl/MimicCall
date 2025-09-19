@@ -48,7 +48,7 @@ def parse_syscall_trace(filepath):
             current_syscall = None
             base_indent = -1
 
-        if in_syscall_block and indent_level > base_indent:
+        if in_syscall_block and indent_level >= base_indent:
             filename = os.path.basename(filepath)
             results.append((filename, current_syscall, function))
 
