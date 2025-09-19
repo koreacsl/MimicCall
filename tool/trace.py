@@ -32,12 +32,7 @@ def process_binaries(exe_folder, uftrace_folder, error_log_file):
 
                     start_time = time.time()
                     try:
-                        subprocess.run([
-                            "sudo", "uftrace", "record",
-                            "-K", "20",
-                            "-d", trace_dir,
-                            binary_path
-                        ], check=True, timeout=5)
+                        subprocess.run(["sudo", "-n", "timeout", "--preserve-status", "5s", "uftrace", "record", "-K", "20", "-d", trace_dir, binary_path], check=False)
 
                         end_time = time.time()
                         duration = end_time - start_time
