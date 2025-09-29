@@ -29,6 +29,7 @@ Running this script will fully prepare the tool as described in Section 3.
 
 Implements the MimicCall identification framework (Section 3).
 It parses Syzkaller syscall descriptions, generates valid test cases, traces execution with ftrace, and builds a syscall-to-function database.
+**Requirements:** Python 3.7 or higher.
 
 ---
 
