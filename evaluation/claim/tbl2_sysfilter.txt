@@ -1,3 +1,3 @@
 %s\n
 [+] Min vulnerable functions per filter: 100 (Binary: httpd)
-[+] Max vulnerable functions per filter: 103 (Binary: bind)
+[+] Max vulnerable functions per filter: 103 (Binary: redis)

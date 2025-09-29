@@ -153,14 +153,28 @@ for cid in sorted(plot_df['cluster'].unique()):
     
     cluster_matrix = similarity_matrix.loc[members, members].fillna(0.0)
 
-target_clusters = [3,4]
+marker_syscalls = ['fsetxattr', 'poll'] 
+
+target_cluster_indices = []
+for marker in marker_syscalls:
+    if marker in plot_df['syscall'].values:
+        cluster_id = plot_df.loc[plot_df['syscall'] == marker, 'cluster'].iloc[0]
+        target_cluster_indices.append(cluster_id)
+
+target_cluster_indices = sorted(list(set(target_cluster_indices)))
 
 vmin, vmax = 0.0, 1.0
 
-fig, axes = plt.subplots(1, 2, figsize=(22, 15))
+num_clusters = len(target_cluster_indices)
+fig, axes = plt.subplots(1, num_clusters, figsize=(11 * num_clusters, 15))
+
+if num_clusters == 1:
+    axes = [axes]
+
 cbar_ax = fig.add_axes([0.92, 0.3, 0.015, 0.4])
 
-for i, cid in enumerate(target_clusters):
+# (이전 코드 생략)
+for i, cid in enumerate(target_cluster_indices):
     members = plot_df[plot_df['cluster'] == cid]['syscall'].tolist()
     cluster_matrix = similarity_matrix.loc[members, members].fillna(0.0)
 
@@ -175,8 +189,8 @@ for i, cid in enumerate(target_clusters):
         square=True,
         vmin=vmin,
         vmax=vmax,
-        cbar=(i == len(target_clusters) - 1),
-        cbar_ax=cbar_ax if i == len(target_clusters) - 1 else None,
+        cbar=(i == len(target_cluster_indices) - 1),
+        cbar_ax=cbar_ax if i == len(target_cluster_indices) - 1 else None,
         ax=ax
     )
 

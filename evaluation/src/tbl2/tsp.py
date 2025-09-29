@@ -75,6 +75,6 @@ def evaluate_tsp():
 
         avg = sum(func_count_by_binary.values()) / len(func_count_by_binary)
         print(f"[+] Avg vulnerable functions per filter: {avg:.2f}")
-=
+
 if __name__ == "__main__":
     evaluate_tsp()

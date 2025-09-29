@@ -1,11 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"   # evaluation 절대경로
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SRC_DIR="$ROOT_DIR/src"
 TBL2_DIR="$SRC_DIR/tbl2"
 CLAIM_DIR="$ROOT_DIR/claim"
 mkdir -p "$CLAIM_DIR"
+
+python3 -m pip install --upgrade pip
+
+echo "Upgrading numpy and python-dateutil to compatible versions..."
+python3 -m pip install --upgrade numpy python-dateutil
+
+echo "Installing required libraries: scikit-learn, adjustText, matplotlib, seaborn, pandas"
+python3 -m pip install scikit-learn adjustText matplotlib seaborn pandas
 
 python3 -u "$SRC_DIR/fig3_4.py"
 
@@ -24,7 +32,7 @@ if [ -d "$TBL2_DIR" ]; then
     python3 -u "$py" | grep -E "^\[+\].*(Min|Max) vulnerable functions per filter" > "$claim_file" || true
     done
 fi
-#!/bin/bash
+
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
