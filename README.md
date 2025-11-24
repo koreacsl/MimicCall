@@ -1,7 +1,7 @@
 # 🎭 MimicCall: Bypassing System Call Filters via Kernel Function Redundancy
 
 > **Note**
-> This research will be presented at the **30th Annual Computer Security Applications Conference (ACSAC 2025)**.
+> This research will be presented at the **41th Annual Computer Security Applications Conference (ACSAC 2025)**.
 
 ## 📜 About the Paper
 
